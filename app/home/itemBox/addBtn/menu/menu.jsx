@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 
-const Menu = ({ monsterData, compoundingData, setCompoundingData }) => {
+const Menu = ({ monsterData, compoundingData, setCompoundingData, materialData, setMaterialData }) => {
 
   // 等級の表示画面の状態管理
   const [menuGreat, setMenuGreat] = useState(true);
@@ -30,14 +30,53 @@ const Menu = ({ monsterData, compoundingData, setCompoundingData }) => {
   const handleAdd = (monster) => {
   
     // compoundingDataを複製して新しいオブジェクトを作成
-    const newData = { ...compoundingData };
+    const newCompoundingData = { ...compoundingData };
   
-    newData.hasOwnProperty(monster.key_name)
-    ? newData[monster.key_name] += 1
-    : newData[monster.key_name] = 1;
+    newCompoundingData.hasOwnProperty(monster.key_name)
+    ? newCompoundingData[monster.key_name] += 1
+    : newCompoundingData[monster.key_name] = 1;
   
     // compoundingDataを更新
-    setCompoundingData(newData);
+    setCompoundingData(newCompoundingData);
+
+
+
+
+
+    
+    const newMaterial = menuGreat
+    ? [
+        monster.material_1,
+        monster.material_2,
+        monster.material_3,
+        monster.material_4,
+      ]
+    : [monster.key_name];
+  
+  const filteredMaterial = newMaterial.filter(Boolean); // undefined や null を除外
+  
+  const newMaterialData = { ...materialData };
+  
+  filteredMaterial.forEach((material) => {
+    if (newMaterialData.hasOwnProperty(material)) {
+      newMaterialData[material] += 1; // すでに存在する場合はカウントを増やす
+    } else {
+      newMaterialData[material] = 1; // 新しいキーを作成し、カウントを1に設定
+    }
+  });
+  
+  // 更新されたデータをセット
+  setMaterialData(newMaterialData);
+  
+  console.log(newMaterialData);
+  
+    
+
+
+
+
+
+
   
   };
 
@@ -53,8 +92,39 @@ const Menu = ({ monsterData, compoundingData, setCompoundingData }) => {
 
       setCompoundingData(newCompoundingData);
     }
+    
+
+
+
+
+
+
+
+
+      const newMaterial = menuGreat
+        ? [monster.material_1, monster.material_2, monster.material_3, monster.material_4]
+        : [monster.key_name];
+    
+      const newMaterialData = { ...materialData };
+    
+      newMaterial.forEach((material) => {
+        if (newMaterialData.hasOwnProperty(material)) {
+          // 1 減らしてゼロ以下にならないように制御
+          newMaterialData[material] = Math.max(0, newMaterialData[material] - 1);
+          
+          // ゼロになった場合はキーを削除
+          if (newMaterialData[material] === 0) {
+            delete newMaterialData[material];
+          }
+        }
+      });
+    
+      // 更新されたデータをセット
+      setMaterialData(newMaterialData);
+    
+      console.log(newMaterialData);
+    
   
-    console.log("Updated compoundingData (Subtract):", newCompoundingData);
   };
 
   useEffect(() => {
