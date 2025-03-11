@@ -2,7 +2,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Menu from "./menu/menu"
 
-const Page = ({monsterData}) => {
+const Page = ({ monsterData, compoundingData, setCompoundingData }) => {
 
   const [choiceMenu, setChoiceMenu] = useState(false)
 
@@ -19,7 +19,11 @@ const Page = ({monsterData}) => {
       >
         <Image src="/addButton.png" alt="Add Button" width={40} height={40} />
       </button>
-      <Menu monsterData={monsterData}/>
+      <Menu
+        monsterData={monsterData}
+        compoundingData={compoundingData}
+        setCompoundingData={setCompoundingData}
+      />
     </div>
   );
 };

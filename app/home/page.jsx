@@ -1,53 +1,101 @@
-import React from 'react';
+"use client";
 
-const page = () => {
+import { useEffect, useState } from "react";
+import { client } from "../../libs/client";
 
-  const arase = [
-    { name: 'イフリート', type: 'dark', number: 1 },
-    { name: '熊猫武者', type: 'fire', number: 1 },
-    { name: 'バーレイグ', type: 'fire', number: 2 },
-    { name: '鬼怪童子', type: 'dark', number: 2 },
-    { name: 'フェニックス', type: 'water', number: 1 },
-    { name: 'トーテム術士', type: 'wind', number: 2 },
-    { name: 'パラディン', type: 'light', number: 1 },
-    { name: 'ヴァルキリー', type: 'wind', number: 1 },
-  ];
+import AddBtn from './itemBox/addBtn/addBtn'
 
-  // タイプ表示順を設定
-  const typeOrder = ['fire', 'water', 'wind', 'dark', 'light'];
+const order = ["fire", "water", "wind", "dark", "light"];
 
-  // 配列を作成
-  const groupedByType = {};
+export default function Home() {
 
-  // forEachでaraseを繰り返し処理
-  arase.forEach((item) => {
-    // 新しいタイプなら新しい配列を作る
-    if (!groupedByType[item.type]) {
-      groupedByType[item.type] = [];
-    }
-    groupedByType[item.type].push(item);
-  });
+  // 召喚獣のデータを入れる変数
+  const [monsterData, setMonsterData] = useState([]);
+
+  const [compoundingData, setCompoundingData] = useState([]);
+
+  // 非同期で商慣習の情報取得
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await client.get({
+        endpoint: process.env.NEXT_PUBLIC_MICROCMS_SERVICE_DOMAIN,
+        queries: { limit: 100 },
+      });
+      // 取得したデータをスプレッド構文でreverseを使って反転
+      setMonsterData([...data.contents].reverse());
+    };
+    fetchData();
+  }, []);
+  // console.log(monsterData)
+
+  // const grade5Monsters = monsterData.filter((monster) => monster.grade === "5");
+  // const grade5 = monsterData.filter((e) => e.grade === '5');
+  // console.log(grade5Monsters)
+  // const grade4Monsters = monsters.filter((monster) => monster.grade === "4");
+
+  // const groupMonsters = (monsterList) =>
+  //   order.map((type) => ({
+  //     type,
+  //     monsters: monsterList.filter((monster) => monster.type === type),
+  //   }));
 
   return (
-    <div>
-      {typeOrder.map((type) => (
-        groupedByType[type] && (
-          <div key={type} style={{ marginBottom: "20px" }}>
-            <h2>{type}</h2>
-            <ul>
-              {groupedByType[type]
-                .sort((a, b) => a.number - b.number) // number順にソート
-                .map((item, index) => (
-                  <li key={index}>
-                    {item.name} (No.{item.number})
-                  </li>
-                ))}
-            </ul>
-          </div>
-        )
-      ))}
-    </div>
-  );
-};
+    // <div className="p-4">
+    //   <h1 className="text-2xl font-bold mb-4">Grade 5 Monsters</h1>
+    //   {groupMonsters(grade5Monsters).map(({ type, monsters }) => (
+    //     <div key={type} className="mb-4">
+    //       <h2 className="text-xl font-bold capitalize mb-2">{type}</h2>
+    //       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+    //         {monsters.map((monster) => (
+    //           <div key={monster.key_name} className="border p-2 rounded-lg">
+    //             <img
+    //               src={monster.icon.url}
+    //               alt={monster.proper_name}
+    //               className="w-20 h-20 mx-auto"
+    //             />
+    //             <p className="text-center font-semibold">{monster.proper_name}</p>
+    //             <p className="text-center text-sm">({monster.monster_name})</p>
+    //           </div>
+    //         ))}
+    //       </div>
+    //     </div>
+    //   ))}
 
-export default page;
+    //   <h1 className="text-2xl font-bold mt-6 mb-4">Grade 4 Monsters</h1>
+    //   {groupMonsters(grade4Monsters).map(({ type, monsters }) => (
+    //     <div key={type} className="mb-4">
+    //       <h2 className="text-xl font-bold capitalize mb-2">{type}</h2>
+    //       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+    //         {monsters.map((monster) => (
+    //           <div key={monster.key_name} className="border p-2 rounded-lg">
+    //             <img
+    //               src={monster.icon.url}
+    //               alt={monster.proper_name}
+    //               className="w-20 h-20 mx-auto"
+    //             />
+    //             <p className="text-center font-semibold">{monster.proper_name}</p>
+    //             <p className="text-center text-sm">({monster.monster_name})</p>
+    //           </div>
+    //         ))}
+    //       </div>
+    //     </div>
+    //   ))}
+    // </div>
+    <>
+      <AddBtn
+        monsterData={monsterData}
+        compoundingData={compoundingData}
+        setCompoundingData={setCompoundingData}
+      />
+    </>
+  );
+}
+
+
+
+
+
+
+
+
+
