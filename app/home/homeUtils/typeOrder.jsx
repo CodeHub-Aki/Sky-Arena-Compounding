@@ -1,0 +1,1 @@
+export const typeOrder = ["fire", "water", "wind", "light", "dark"];
