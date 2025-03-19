@@ -3,18 +3,31 @@ import { useState, useEffect } from 'react'
 import { typeOrder, typeLabel } from '../../utils/typeOrder'
 import { category } from '../utils/category'
 
-const menu = ({ monsterData, fuseData, setFuseData }) => {
+const menu = ({ monsterData, fuseData, setFuseData, addData, setAddData }) => {
 
   const [menuBtn, setMenuBtn] = useState(true);
-  const [addData, setAddData] = useState([]);
+  
   
   const addBtn = (monster) => {
-    setAddData((prev) => [...prev, monster])
-    setFuseData(category(addData));
-  }
+    setAddData((prev) => {
+      const check = prev.find((e) => e.id === monster.id);
+      if(check){
+        return prev.map((e) =>
+        e.id === monster.id ? { ...e, count: e.count + 1 } : e
+        );
+      } else {
+        return [...prev, {...monster, count: 1}];
+      }
+    })
+    // setFuseData(category(addData));
+  };
 
-  console.log(addData)
+  useEffect(() => {
+    setFuseData(category(addData));
+  }, [addData]);
+
   console.log(fuseData)
+  console.log(addData)
   
   return (
     <menu
