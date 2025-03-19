@@ -13,22 +13,46 @@ const Page = ({ monsterData, fuseData, setFuseData, addData, setAddData }) => {
     setMenuView(!menuView)
   }
 
+  const countBtn = (id, count) => {
+    setAddData((prev) => {
+      return prev
+        .map((monster) =>
+          monster.id === id ? { ...monster, count: monster.count + count } : monster
+        )
+        .filter((monster) => monster.count > 0);
+    });
+  };
+
   return (
     <>
 
       <div className="flex flex-col items-center w-fit m-10">
-        {addData.map((monster) => (
-              monster.icon && monster.icon.url ? (
-                <Image 
-                  key={monster.id} 
-                  src={monster.icon.url} 
-                  alt={monster.monster_name} 
-                  width={100} 
-                  height={93} 
-                  priority 
-                />
-              ) : null
-        ))}
+        {addData ?
+          addData.map((monster) => (
+            <div key={monster.id} >
+              <Image 
+                src={monster.icon.url} 
+                alt={monster.monster_name} 
+                width={100} 
+                height={100}
+                priority 
+              />
+              <div className="flex">
+                <button
+                  onClick={() => countBtn(monster.id, -1)}
+                >
+                  －
+                </button>
+                  <p>{monster.count}</p>
+                <button
+                  onClick={() => countBtn(monster.id, 1)}
+                >
+                  ＋
+                </button>
+              </div>
+            </div>
+          ))
+        : null}
       </div>
 
       <div className="flex flex-col items-center w-fit m-10">
@@ -49,6 +73,7 @@ const Page = ({ monsterData, fuseData, setFuseData, addData, setAddData }) => {
             setFuseData={setFuseData}
             addData={addData}
             setAddData={setAddData}
+            setMenuView={setMenuView}
           />
         )}
 
