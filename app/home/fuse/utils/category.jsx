@@ -1,4 +1,4 @@
-import { typeOrder } from '../../homeUtils/typeOrder'
+import { typeOrder } from '../../utils/typeOrder'
 
 // 引数でモンスターデータを受け取る。
 export const category = (monsterData) => {
