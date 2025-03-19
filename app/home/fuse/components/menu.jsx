@@ -3,23 +3,21 @@ import { useState, useEffect } from 'react'
 import { typeOrder, typeLabel } from '../../utils/typeOrder'
 import { category } from '../utils/category'
 
-const menu = ({ monsterData, fuseData, setFuseData, addData, setAddData }) => {
+const menu = ({ monsterData, fuseData, setFuseData, addData, setAddData, setMenuView }) => {
 
   const [menuBtn, setMenuBtn] = useState(true);
   
   
   const addBtn = (monster) => {
+    setMenuView(false);
     setAddData((prev) => {
-      const check = prev.find((e) => e.id === monster.id);
-      if(check){
-        return prev.map((e) =>
-        e.id === monster.id ? { ...e, count: e.count + 1 } : e
-        );
+      const addCheck = prev.find((e) => e.id === monster.id);
+      if(addCheck){
+        return prev;
       } else {
         return [...prev, {...monster, count: 1}];
       }
     })
-    // setFuseData(category(addData));
   };
 
   useEffect(() => {
@@ -62,17 +60,52 @@ const menu = ({ monsterData, fuseData, setFuseData, addData, setAddData }) => {
         <div key={type}>
           <h3>{typeLabel[type]}属性</h3>
           <ul>
-            {monsterData[menuBtn ? '5' : '4'][type].map((monster) => (
-              <li
-                key={monster.key_name}
-                onClick={() => addBtn(monster)}
-              >
-                {monster.proper_name}
-              </li>
-            ))}
+            {monsterData[menuBtn ? '5' : '4'][type].map((monster) => {
+              const monsterCheck = addData.some((e) => e.id === monster.id);
+              return (
+                <li
+                  key={monster.key_name}
+                  className={`${monsterCheck && 'opacity-30'}`}
+                >
+                  <button
+                    onClick={() => addBtn(monster)}
+                    disabled={monsterCheck}
+                  >
+                    {monster.proper_name}
+                  </button>
+                </li>
+              )
+            })}
           </ul>
         </div>
       ))}
+      
+
+
+      {/* {typeOrder.map((type) => (
+  <div key={type}>
+    <h3>{typeLabel[type]}属性</h3>
+    <ul>
+      {monsterData[menuBtn ? '5' : '4'][type].map((monster) => {
+        const isSelected = addData.some((e) => e.id === monster.id); // 既に選択済みか判定
+        
+        return (
+          <li key={monster.key_name}>
+            <button 
+              onClick={() => addBtn(monster)} 
+              disabled={isSelected} 
+              className={`py-2 px-4 rounded-lg ${isSelected ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-700 text-white'}`}
+            >
+              {monster.proper_name}
+            </button>
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+))} */}
+
+      
 
     </menu>
   )
